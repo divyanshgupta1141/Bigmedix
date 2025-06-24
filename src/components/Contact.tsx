@@ -18,13 +18,38 @@ const Contact = () => {
       [e.target.name]: e.target.value
     });
   };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // You can add form submission logic here
-  };
+  try {
+    const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
+const response = await fetch(`${API_URL}/api/contact`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(formData)
+});
+
+
+    const result = await response.json();
+    alert(result.message);
+
+    // Reset form fields
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      date: '',
+      department: '',
+      message: ''
+    });
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('Failed to submit form. Please try again.');
+  }
+};
+
 
   return (
     <section id="contact" className="py-20 bg-white relative overflow-hidden">
@@ -90,8 +115,8 @@ const Contact = () => {
                 <Calendar className="text-[#F26C45] mr-4" size={32} />
                 <h3 className="text-3xl font-bold text-[#1E4C4C]">Book an Appointment</h3>
               </div>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
+             
+               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div className="group">
                     <label className="block text-sm font-bold text-gray-700 mb-3">First Name</label>
